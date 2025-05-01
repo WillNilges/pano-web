@@ -10,8 +10,10 @@ export default async function RootLayout({
   return (
     <html>
       <body>
+        <div>
         <PanoHeader/>
         {children}
+        </div>
       </body>
     </html>
   );
