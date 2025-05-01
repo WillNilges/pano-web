@@ -12,8 +12,6 @@ import {
   modelTypeToAPIRouteMap,
   modelTypeToLabelMap,
 } from "@/lib/types";
-import PanoHeader from "../Pano/Header/PanoHeader";
-import { getPanoEndpoint } from "@/lib/endpoint";
 import { panoEndpoint } from "@/lib/config";
 
 type FormValues = {
@@ -187,7 +185,6 @@ export default function PanoramaViewer({
                 timestamp={image.timestamp}
                 category={image.category}
                 url={image.url}
-                panoEndpoint={panoEndpoint}
               />
             </div>
           ))}

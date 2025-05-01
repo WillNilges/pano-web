@@ -1,6 +1,4 @@
-import { getPanoEndpoint, panoEnabled } from "@/lib/endpoint";
 import PanoramaViewer from "@/components/PanoramaViewer/PanoramaViewer";
-import PanoHeader from "@/components/Pano/Header/PanoHeader";
 
 export const metadata = {
   title: "View Images on pano",
