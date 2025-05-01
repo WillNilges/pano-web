@@ -3,10 +3,11 @@ permissions: read-all
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev3 ]
   workflow_dispatch:
     branches:
       - main
+      - dev3
 
 jobs:
   push_to_registry_dev:
