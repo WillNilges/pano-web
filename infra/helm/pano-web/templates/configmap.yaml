@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: pano-web-config
 data:
-  PANO_ENDPOINT: {{ .Values.pano-web.pano_endpoint }}
-  NEXT_PUBLIC_PANO_ENDPOINT: {{ .Values.pano-web.pano_endpoint }}
+  PANO_ENDPOINT: {{ .Values.pano_web.pano_endpoint }}
+  NEXT_PUBLIC_PANO_ENDPOINT: {{ .Values.pano_web.pano_endpoint }}

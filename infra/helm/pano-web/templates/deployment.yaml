@@ -66,7 +66,7 @@ spec:
           {{- end }}
           envFrom:
           - configMapRef:
-              name: {{ .Chart.Name }}-config
+              name: pano-web-config
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
