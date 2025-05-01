@@ -17,10 +17,10 @@ import {
   modelTypeToAPIFieldMap,
   modelTypeToAPIRouteMap,
   modelTypeToLabelMap,
-} from "@/app/types";
+} from "@/lib/types";
 import { modelSelectOptions } from "../PanoramaViewer/PanoramaViewer";
 import PanoHeader from "../Pano/Header/PanoHeader";
-import { getPanoEndpoint } from "@/lib/endpoint";
+import { panoEndpoint } from "@/lib/config";
 
 type FormValues = {
   modelNumber: number;
@@ -43,14 +43,10 @@ export type { FormValues };
 function PanoramaUploader() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [user, setUser] = React.useState("");
-  const [panoEndpoint, setPanoEndpoint] = React.useState("");
   useEffect(() => {
-    getPanoEndpoint().then((endpoint) => {
-      setPanoEndpoint(endpoint);
-
       // TODO (wdn): The login element should probably be its own component
       // Check if we're logged into pano
-      fetch(`${endpoint}/userinfo`, {
+      fetch(`${panoEndpoint}/userinfo`, {
         credentials: "include",
       }).then(async (response) => {
         const j = await response.json();
@@ -60,9 +56,8 @@ function PanoramaUploader() {
           setIsLoggedIn(true);
           return;
         }
-        window.location.replace(`${endpoint}/login/google`);
+        window.location.replace(`${panoEndpoint}/login/google`);
       });
-    });
   }, []);
 
   const [selectedModel, setSelectedModel] = React.useState(
@@ -166,7 +161,7 @@ function PanoramaUploader() {
           toast.success("Upload Successful!");
           setIsLoading(false);
           setLinkToViewUploadedFiles(
-            `${window.location.origin}/pano/view/${modelTypeToAPIRouteMap.get(selectedModel)}/${formSubmission.modelNumber}/`,
+            `${window.location.origin}/view/${modelTypeToAPIRouteMap.get(selectedModel)}/${formSubmission.modelNumber}/`,
           );
           return;
         }
@@ -243,7 +238,7 @@ function PanoramaUploader() {
     // While the app decides whether or not you're logged in it'll hide the view from you.
     return (
       <>
-        <a href="/pano/view" style={{ textDecoration: "none", color: "black" }}>
+        <a href="/view" style={{ textDecoration: "none", color: "black" }}>
           <h1>Pano</h1>
         </a>
         <p>Loading...</p>
@@ -253,7 +248,6 @@ function PanoramaUploader() {
 
   return (
     <>
-      <PanoHeader panoEndpoint={panoEndpoint} user={user} />
       <h2>Image Upload</h2>
       <p>
         Upload panoramas and other relevant install photos here. This form is

@@ -14,6 +14,7 @@ import {
 } from "@/lib/types";
 import PanoHeader from "../Pano/Header/PanoHeader";
 import { getPanoEndpoint } from "@/lib/endpoint";
+import { panoEndpoint } from "@/lib/config";
 
 type FormValues = {
   modelNumber: number;
@@ -49,13 +50,6 @@ export default function PanoramaViewer({
   urlModelNumber,
   urlModelType,
 }: PanoramaViewerProps) {
-  const [panoEndpoint, setPanoEndpoint] = React.useState("");
-  useEffect(() => {
-    getPanoEndpoint().then((endpoint) => {
-      setPanoEndpoint(endpoint);
-    });
-  }, []);
-
   useEffect(() => {
     if (panoEndpoint === "") {
       console.warn("Pano Endpoint not set");
@@ -99,7 +93,7 @@ export default function PanoramaViewer({
     window.history.pushState(
       "View images on Pano",
       "",
-      `/pano/view/${modelTypeToAPIRouteMap.get(selectedModel)}/${data.modelNumber}`,
+      `/view/${modelTypeToAPIRouteMap.get(selectedModel)}/${data.modelNumber}`,
     );
     getImages(data.modelNumber, selectedModel);
   };
@@ -183,7 +177,9 @@ export default function PanoramaViewer({
       <div className={styles.panoramaList}>
         {images.length > 0 &&
           images.map((image: Image, index) => (
-            <div>
+            <div 
+                key={image.id}
+            >
               <PanoramaViewerCard
                 key={image.id}
                 id={image.id}

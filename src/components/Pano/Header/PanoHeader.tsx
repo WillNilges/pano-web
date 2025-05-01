@@ -2,10 +2,9 @@
 import React, { useEffect } from "react";
 import styles from "./PanoHeader.module.scss";
 import Image from "next/image";
+import { panoEndpoint } from "@/lib/config";
 
 export default function PanoHeader() {
-  const panoEndpoint = process.env.NEXT_PUBLIC_PANO_ENDPOINT;
-
   // Authentication
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [user, setUser] = React.useState("");
@@ -31,7 +30,7 @@ export default function PanoHeader() {
     <>
       <div className={styles.panoHeader}>
         <a
-          href="/pano/view"
+          href="/view"
           style={{
             display: "flex",
             flexDirection: "row",
@@ -50,7 +49,7 @@ export default function PanoHeader() {
           }}
         >
           <a
-            href={"/pano/upload"}
+            href={"/upload"}
             style={{ padding: "10px" }}
             className={`${!isLoggedIn ? styles.disabled : ""}`}
           >

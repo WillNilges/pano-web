@@ -1,16 +1,4 @@
 "use server";
-
-// Ask the server where Pano lives
-export async function getPanoEndpoint() {
-  const panoEndpoint = process.env.PANO_URL;
-  console.log(`Pano Endpoint is ${panoEndpoint}`);
-  if (panoEndpoint === undefined) {
-    //throw new Error("Expected PANO_URL environment variable");
-    return "";
-  }
-  return panoEndpoint;
-}
-
 /*
 // Ask the server what endpoint to use.
 export async function getMeshDBAPIEndpoint() {
