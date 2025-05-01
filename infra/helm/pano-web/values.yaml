@@ -66,6 +66,8 @@ ingress:
   hosts:
     - host: devpano.nycmesh.net 
       paths:
+        - path: /
+          pathType: ImplementationSpecific
         - path: /view
           pathType: ImplementationSpecific
   tls: []
