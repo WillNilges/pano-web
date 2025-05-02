@@ -44,3 +44,5 @@ jobs:
           push: true
           tags: willnilges/pano-web:${{ inputs.environment }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_PANO_ENDPOINT=${{ vars.PANO_ENDPOINT }}
