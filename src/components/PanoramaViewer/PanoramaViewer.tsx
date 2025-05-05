@@ -126,18 +126,11 @@ export default function PanoramaViewer({
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className={styles.viewerBar}>
         <h2 style={{ color: "gray" }}>
           {modelTypeToLabelMap.get(selectedModel)} {modelNumber}
         </h2>
-        <div className={styles.panoNavBar}>
+        <div className={styles.panoSearchBox}>
           {/*TODO (wdn): The search bar should probably be its own component.*/}
           <form onSubmit={handleSubmit(onSubmit)} className={styles.formBody}>
             <Select

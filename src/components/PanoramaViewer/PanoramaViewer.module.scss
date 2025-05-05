@@ -1,4 +1,11 @@
-.panoNavBar {
+.viewerBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panoSearchBox {
   display: flex;
   flex-direction: row;
   justify-content: right;
@@ -28,7 +35,7 @@
 
 .modelSelectDropdown {
   font-size: 16px;
-  width: 120px;
+  max-width: 120px;
 }
 
 .disabled {
@@ -39,26 +46,19 @@
 
 .panoramaList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 items per row */
-  gap: 10px; /* Optional: add gap between items */
-}
-
-.panoramaList {
-  display: grid;
   grid-template-columns: repeat(3, 1fr); /* Default to 3 columns */
   gap: 10px; /* Optional: add gap between items */
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) { /* Adjust the max-width as needed */
+  .viewerBar {
+    flex-direction: column-reverse;
+  }
+
   .panoramaList {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+    grid-template-columns: 1fr; /* 2 columns for smaller screens */
   }
 }
 
-@media (max-width: 400px) { /* Adjust the max-width as needed */
-  .panoramaList {
-    grid-template-columns: 1fr; /* 1 column for very small screens */
-  }
-}
 
