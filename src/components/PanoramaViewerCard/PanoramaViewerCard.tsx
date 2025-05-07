@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
 import ModalImage from "react-modal-image";
-import { panoEndpoint } from "@/lib/config";
+import { getPanoEndpoint } from "@/lib/server";
 
 //const selectCategoryOptions = [
 //  { value: "PANORAMA", label: "Panorama" },
@@ -37,6 +37,11 @@ export default function PanoramaViewerCard({
   category = "",
   url,
 }: PanoramaViewerCardProps) {
+  const [panoEndpoint, setPanoEndpoint] = useState("");
+  useEffect(() => {
+    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+  }, []);
+
   // React hook form stuff
   const {
     register,
@@ -139,6 +144,8 @@ export default function PanoramaViewerCard({
   );
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+
 
   return (
     <React.Fragment>

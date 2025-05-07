@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./PanoramaViewer.module.scss";
 import { Button, CircularProgress } from "@mui/material";
@@ -12,7 +12,7 @@ import {
   modelTypeToAPIRouteMap,
   modelTypeToLabelMap,
 } from "@/lib/types";
-import { panoEndpoint } from "@/lib/config";
+import { getPanoEndpoint } from "@/lib/server";
 
 type FormValues = {
   modelNumber: number;
@@ -48,6 +48,25 @@ export default function PanoramaViewer({
   urlModelNumber,
   urlModelType,
 }: PanoramaViewerProps) {
+  const [panoEndpoint, setPanoEndpoint] = useState("");
+  useEffect(() => {
+    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+  }, []);
+
+  useEffect(() => {
+    if (panoEndpoint === "") {
+      console.warn("Pano Endpoint not set");
+      return;
+    }
+    // Query for images if we have a number
+    if (urlModelType !== undefined) {
+      console.debug(
+        `Page loaded. Querying for ${urlModelType}: ${urlModelNumber}.`,
+      );
+      getImages(Number(urlModelNumber), urlModelType);
+    }
+  }, [panoEndpoint]);
+
   useEffect(() => {
     if (panoEndpoint === "") {
       console.warn("Pano Endpoint not set");
@@ -122,7 +141,9 @@ export default function PanoramaViewer({
     setIsLoading(false);
   }
 
-  console.log(`panoEndpoint is: ${panoEndpoint}`);
+  if (panoEndpoint === "") {
+    return <div>Loading...</div>; // Show a loading state while your code runs
+  }
 
   return (
     <>

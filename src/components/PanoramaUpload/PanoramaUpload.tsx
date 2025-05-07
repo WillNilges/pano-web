@@ -20,7 +20,7 @@ import {
 } from "@/lib/types";
 import { modelSelectOptions } from "../PanoramaViewer/PanoramaViewer";
 import PanoHeader from "../Pano/Header/PanoHeader";
-import { panoEndpoint } from "@/lib/config";
+import { getPanoEndpoint } from "@/lib/server";
 
 type FormValues = {
   modelNumber: number;
@@ -41,6 +41,12 @@ interface Image {
 export type { FormValues };
 
 function PanoramaUploader() {
+  const [panoEndpoint, setPanoEndpoint] = React.useState("");
+  useEffect(() => {
+    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+  }, []);
+
+
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [user, setUser] = React.useState("");
   useEffect(() => {
@@ -58,7 +64,7 @@ function PanoramaUploader() {
         }
         window.location.replace(`${panoEndpoint}/login/google`);
       });
-  }, []);
+  }, [panoEndpoint]);
 
   const [selectedModel, setSelectedModel] = React.useState(
     ModelType.InstallNumber,

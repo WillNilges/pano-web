@@ -1,13 +1,18 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./PanoHeader.module.scss";
 import Image from "next/image";
-import { panoEndpoint } from "@/lib/config";
+import { getPanoEndpoint } from "@/lib/server";
 
 export default function PanoHeader() {
   // Authentication
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [user, setUser] = React.useState("");
+  const [panoEndpoint, setPanoEndpoint] = useState("");
+
+  useEffect(() => {
+    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+  }, []);
 
   useEffect(() => {
     // Check if we're logged into pano
@@ -24,7 +29,11 @@ export default function PanoHeader() {
       setUser("");
       setIsLoggedIn(false);
     });
-  }, []);
+  }, [panoEndpoint]);
+
+  if (panoEndpoint === "") {
+    return <div>Loading...</div>; // Show a loading state while your code runs
+  }
 
   return (
     <>
