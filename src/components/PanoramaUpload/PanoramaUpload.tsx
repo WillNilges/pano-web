@@ -46,24 +46,23 @@ function PanoramaUploader() {
     getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
   }, []);
 
-
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [user, setUser] = React.useState("");
   useEffect(() => {
-      // TODO (wdn): The login element should probably be its own component
-      // Check if we're logged into pano
-      fetch(`${panoEndpoint}/userinfo`, {
-        credentials: "include",
-      }).then(async (response) => {
-        const j = await response.json();
-        if (response.status === 200) {
-          console.log("You're logged in");
-          setUser(j.name);
-          setIsLoggedIn(true);
-          return;
-        }
-        window.location.replace(`${panoEndpoint}/login/google`);
-      });
+    // TODO (wdn): The login element should probably be its own component
+    // Check if we're logged into pano
+    fetch(`${panoEndpoint}/userinfo`, {
+      credentials: "include",
+    }).then(async (response) => {
+      const j = await response.json();
+      if (response.status === 200) {
+        console.log("You're logged in");
+        setUser(j.name);
+        setIsLoggedIn(true);
+        return;
+      }
+      window.location.replace(`${panoEndpoint}/login/google`);
+    });
   }, [panoEndpoint]);
 
   const [selectedModel, setSelectedModel] = React.useState(

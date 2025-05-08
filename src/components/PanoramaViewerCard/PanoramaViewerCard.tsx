@@ -145,8 +145,6 @@ export default function PanoramaViewerCard({
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-
-
   return (
     <React.Fragment>
       <div className={styles.card}>

@@ -10,12 +10,15 @@ export default async function RootLayout({
   return (
     <html>
       <head>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search"
+        />
       </head>
       <body>
         <div>
-        <PanoHeader/>
-        {children}
+          <PanoHeader />
+          {children}
         </div>
       </body>
     </html>

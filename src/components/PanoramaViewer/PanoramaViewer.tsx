@@ -174,11 +174,9 @@ export default function PanoramaViewer({
               type="submit"
               variant="contained"
               disabled={isLoading}
-              style={{ margin: 0, height: "2.4em", color:"white" }}
+              style={{ margin: 0, height: "2.4em", color: "white" }}
             >
-              <span className="material-symbols-outlined">
-                search
-              </span>
+              <span className="material-symbols-outlined">search</span>
             </Button>
             <div hidden={!isLoading}>
               <CircularProgress />
@@ -189,9 +187,7 @@ export default function PanoramaViewer({
       <div className={styles.panoramaList}>
         {images.length > 0 &&
           images.map((image: Image, index) => (
-            <div 
-                key={image.id}
-            >
+            <div key={image.id}>
               <PanoramaViewerCard
                 key={image.id}
                 id={image.id}
