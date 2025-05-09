@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./PanoramaViewer.module.scss";
 import { Button, CircularProgress } from "@mui/material";
@@ -12,9 +12,7 @@ import {
   modelTypeToAPIRouteMap,
   modelTypeToLabelMap,
 } from "@/lib/types";
-import PanoHeader from "../Pano/Header/PanoHeader";
-import { getPanoEndpoint } from "@/lib/endpoint";
-import { panoEndpoint } from "@/lib/config";
+import { getPanoEndpoint } from "@/lib/server";
 
 type FormValues = {
   modelNumber: number;
@@ -50,6 +48,25 @@ export default function PanoramaViewer({
   urlModelNumber,
   urlModelType,
 }: PanoramaViewerProps) {
+  const [panoEndpoint, setPanoEndpoint] = useState("");
+  useEffect(() => {
+    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+  }, []);
+
+  useEffect(() => {
+    if (panoEndpoint === "") {
+      console.warn("Pano Endpoint not set");
+      return;
+    }
+    // Query for images if we have a number
+    if (urlModelType !== undefined) {
+      console.debug(
+        `Page loaded. Querying for ${urlModelType}: ${urlModelNumber}.`,
+      );
+      getImages(Number(urlModelNumber), urlModelType);
+    }
+  }, [panoEndpoint]);
+
   useEffect(() => {
     if (panoEndpoint === "") {
       console.warn("Pano Endpoint not set");
@@ -124,22 +141,17 @@ export default function PanoramaViewer({
     setIsLoading(false);
   }
 
-  console.log(`panoEndpoint is: ${panoEndpoint}`);
+  if (panoEndpoint === "") {
+    return <div>Loading...</div>; // Show a loading state while your code runs
+  }
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className={styles.viewerBar}>
         <h2 style={{ color: "gray" }}>
           {modelTypeToLabelMap.get(selectedModel)} {modelNumber}
         </h2>
-        <div className={styles.panoNavBar}>
+        <div className={styles.panoSearchBox}>
           {/*TODO (wdn): The search bar should probably be its own component.*/}
           <form onSubmit={handleSubmit(onSubmit)} className={styles.formBody}>
             <Select
@@ -162,11 +174,9 @@ export default function PanoramaViewer({
               type="submit"
               variant="contained"
               disabled={isLoading}
-              style={{ margin: 0, height: "2.4em", color:"white" }}
+              style={{ margin: 0, height: "2.4em", color: "white" }}
             >
-              <span className="material-symbols-outlined">
-                search
-              </span>
+              <span className="material-symbols-outlined">search</span>
             </Button>
             <div hidden={!isLoading}>
               <CircularProgress />
@@ -177,9 +187,7 @@ export default function PanoramaViewer({
       <div className={styles.panoramaList}>
         {images.length > 0 &&
           images.map((image: Image, index) => (
-            <div 
-                key={image.id}
-            >
+            <div key={image.id}>
               <PanoramaViewerCard
                 key={image.id}
                 id={image.id}
@@ -187,7 +195,6 @@ export default function PanoramaViewer({
                 timestamp={image.timestamp}
                 category={image.category}
                 url={image.url}
-                panoEndpoint={panoEndpoint}
               />
             </div>
           ))}

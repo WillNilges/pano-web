@@ -1,0 +1,67 @@
+name: Publish and Deploy
+permissions: read-all
+
+on:
+  push:
+    branches: [ main, dev3 ]
+  workflow_dispatch:
+    branches:
+      - main
+      - dev3
+
+jobs:
+  push_to_registry_dev:
+    name: Push to dev3
+    uses: ./.github/workflows/build-push-image.yaml
+    with:
+      environment: dev3
+    secrets: inherit
+    # if: github.ref == 'refs/heads/main'
+
+  deploy_to_dev3:
+    name: Deploy to dev3
+    uses: ./.github/workflows/deploy-to-k8s.yaml
+    with:
+      environment: dev3
+      image_digest: ${{ needs.push_to_registry_dev.outputs.image_digest }}
+    secrets: inherit
+    needs: push_to_registry_dev
+    # if: github.ref == 'refs/heads/main'
+
+  push_to_registry_prod:
+    name: Push to prod1
+    uses: ./.github/workflows/build-push-image.yaml
+    with:
+      environment: prod1
+    secrets: inherit
+    needs: deploy_to_dev3
+    if: github.ref == 'refs/heads/main'
+
+  deploy_to_prod1:
+    name: Deploy to prod1
+    uses: ./.github/workflows/deploy-to-k8s.yaml
+    with:
+      environment: prod1
+      image_digest: ${{ needs.push_to_registry_prod.outputs.image_digest }}
+    secrets: inherit
+    needs: push_to_registry_prod
+    if: github.ref == 'refs/heads/main'
+  
+  push_to_registry_prod2:
+    name: Push to prod2
+    uses: ./.github/workflows/build-push-image.yaml
+    with:
+      environment: prod2
+    secrets: inherit
+    needs: deploy_to_prod1
+    if: github.ref == 'refs/heads/main'
+
+  deploy_to_prod2:
+    name: Deploy to prod2
+    uses: ./.github/workflows/deploy-to-k8s.yaml
+    with:
+      environment: prod2
+      image_digest: ${{ needs.push_to_registry_prod2.outputs.image_digest }}
+    secrets: inherit
+    needs: push_to_registry_prod2
+    if: github.ref == 'refs/heads/main'
