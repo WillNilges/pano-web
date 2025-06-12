@@ -1,3 +1,4 @@
+"use client"
 import React, { useCallback, useEffect, useState } from "react";
 
 import styles from "./PanoramaViewerCard.module.scss";
@@ -17,145 +18,145 @@ import { getPanoEndpoint } from "@/lib/server";
 //];
 
 type FormValues = {
-  category: string;
+    category: string;
 };
 
 export type { FormValues };
 
 interface PanoramaViewerCardProps {
-  id: string;
-  originalFilename: string;
-  timestamp: string;
-  category: string;
-  url: string;
+    id: string;
+    originalFilename: string;
+    timestamp: string;
+    category: string;
+    url: string;
 }
 
 export default function PanoramaViewerCard({
-  id,
-  originalFilename,
-  timestamp,
-  category = "",
-  url,
+    id,
+    originalFilename,
+    timestamp,
+    category = "",
+    url,
 }: PanoramaViewerCardProps) {
-  const [panoEndpoint, setPanoEndpoint] = useState("");
-  useEffect(() => {
-    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
-  }, []);
+    const [panoEndpoint, setPanoEndpoint] = useState("");
+    useEffect(() => {
+        getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
+    }, []);
 
-  // React hook form stuff
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>();
+    // React hook form stuff
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm<FormValues>();
 
-  const [imageURL, setImageURL] = React.useState(url);
+    const [imageURL, setImageURL] = React.useState(url);
 
-  // FIXME (wdn): I should just pass in an Image object instead of passing each
-  // field in
-  const [imageTitle, setImageTitle] = React.useState(originalFilename);
+    // FIXME (wdn): I should just pass in an Image object instead of passing each
+    // field in
+    const [imageTitle, setImageTitle] = React.useState(originalFilename);
 
-  // FIXME (wdn): Any OK here?
-  async function handleUpdateCategory(event: any) {
-    const newCategory = event.target.value;
+    // FIXME (wdn): Any OK here?
+    async function handleUpdateCategory(event: any) {
+        const newCategory = event.target.value;
 
-    let formData = new FormData();
-    formData.append("id", id);
-    formData.append("new_category", newCategory);
-    console.log(event.target.value);
-    fetch(`${panoEndpoint}/api/v1/update`, {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    }).then(async (response) => {
-      const j = await response.json();
-      console.log(j);
-    });
-  }
-
-  function handleClickReplaceImage() {
-    setIsReplaceImageDropzoneOpen(!isReplaceImageDropzoneOpen);
-  }
-
-  // Shows and hides the replaceImage dropzone
-  const [isReplaceImageDropzoneOpen, setIsReplaceImageDropzoneOpen] =
-    React.useState(false);
-
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  const onFileDrop = async (dropzoneImages: File[]) => {
-    console.log(dropzoneImages[0].name);
-    let formData = new FormData();
-
-    formData.append("id", id);
-
-    // Upload images
-    for (var x = 0; x < dropzoneImages.length; x++) {
-      formData.append("dropzoneImages[]", dropzoneImages[x]);
+        let formData = new FormData();
+        formData.append("id", id);
+        formData.append("new_category", newCategory);
+        console.log(event.target.value);
+        fetch(`${panoEndpoint}/api/v1/update`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        }).then(async (response) => {
+            const j = await response.json();
+            console.log(j);
+        });
     }
 
-    fetch(`${panoEndpoint}/api/v1/update`, {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    })
-      .then(async (response) => {
-        if (response.ok) {
-          console.log("Files uploaded successfully");
-          toast.success("Upload Successful!");
+    function handleClickReplaceImage() {
+        setIsReplaceImageDropzoneOpen(!isReplaceImageDropzoneOpen);
+    }
 
-          // todo: don't sort by date?
-          fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+    // Shows and hides the replaceImage dropzone
+    const [isReplaceImageDropzoneOpen, setIsReplaceImageDropzoneOpen] =
+        React.useState(false);
+
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const onFileDrop = async (dropzoneImages: File[]) => {
+        console.log(dropzoneImages[0].name);
+        let formData = new FormData();
+
+        formData.append("id", id);
+
+        // Upload images
+        for (var x = 0; x < dropzoneImages.length; x++) {
+            formData.append("dropzoneImages[]", dropzoneImages[x]);
+        }
+
+        fetch(`${panoEndpoint}/api/v1/update`, {
+            method: "POST",
             credentials: "include",
-          })
+            body: formData,
+        })
             .then(async (response) => {
-              if (!response.ok) {
+                if (response.ok) {
+                    console.log("Files uploaded successfully");
+                    toast.success("Upload Successful!");
+
+                    // todo: don't sort by date?
+                    fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+                        credentials: "include",
+                    })
+                        .then(async (response) => {
+                            if (!response.ok) {
+                                throw response;
+                            }
+                            const j = await response.json();
+                            setImageTitle(j.original_filename);
+                            setImageURL(j.url);
+                        })
+                        .catch(async (error) => {
+                            const msg = `Could not update image: ${error}`;
+                            toast.error(msg);
+                        });
+                    setIsReplaceImageDropzoneOpen(false);
+                    setIsLoading(false);
+                    return;
+                }
                 throw response;
-              }
-              const j = await response.json();
-              setImageTitle(j.original_filename);
-              setImageURL(j.url);
             })
             .catch(async (error) => {
-              const msg = `Could not update image: ${error}`;
-              toast.error(msg);
+                const msg = `File upload error: ${error}`;
+                toast.error(msg);
+                // Not closing the dropzone to invite another attempt at uploading an image
+                setIsLoading(false);
             });
-          setIsReplaceImageDropzoneOpen(false);
-          setIsLoading(false);
-          return;
-        }
-        throw response;
-      })
-      .catch(async (error) => {
-        const msg = `File upload error: ${error}`;
-        toast.error(msg);
-        // Not closing the dropzone to invite another attempt at uploading an image
-        setIsLoading(false);
-      });
-  };
+    };
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      onFileDrop(acceptedFiles);
-      setIsLoading(true);
-    },
-    [onFileDrop],
-  );
+    const onDrop = useCallback(
+        (acceptedFiles: File[]) => {
+            onFileDrop(acceptedFiles);
+            setIsLoading(true);
+        },
+        [onFileDrop],
+    );
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  return (
-    <React.Fragment>
-      <div className={styles.card}>
-        <div className={styles.imageMetadata}>
-          <ul>
-            <li>
-              <strong>{imageTitle}</strong>
-            </li>
-            <li>{timestamp}</li>{" "}
-            {/*XXX (wdn): Do I wanna update the timestamp?*/}
-            {/*
+    return (
+        <React.Fragment>
+            <div className={styles.card}>
+                <div className={styles.imageMetadata}>
+                    <ul>
+                        <li>
+                            <strong>{imageTitle}</strong>
+                        </li>
+                        <li>{timestamp}</li>{" "}
+                        {/*XXX (wdn): Do I wanna update the timestamp?*/}
+                        {/*
             <Select
               {...register("category")}
               placeholder={category}
@@ -176,40 +177,40 @@ export default function PanoramaViewerCard({
               ))}
             </Select>
             */}
-          </ul>
-        </div>
-        <div className={styles.imageActions}>
-          <a href={imageURL}>
-            <img src="/download_icon.png" width={24} />
-          </a>
-          <a onClick={handleClickReplaceImage}>
-            <img src="/edit_icon.png" width={24} />
-          </a>
-        </div>
-        <div className={styles.image}>
-          <div hidden={isReplaceImageDropzoneOpen}>
-            <ModalImage small={imageURL} large={imageURL} />
-          </div>
-          <div hidden={!isReplaceImageDropzoneOpen}>
-            <div {...getRootProps({ className: styles.dropzone })}>
-              <input {...getInputProps()} />
-              <p>
-                Drag and drop panoramas here;
-                <br />
-                Or click to open the file dialog
-              </p>
+                    </ul>
+                </div>
+                <div className={styles.imageActions}>
+                    <a href={imageURL}>
+                        <img src="/download_icon.png" width={24} />
+                    </a>
+                    <a onClick={handleClickReplaceImage}>
+                        <img src="/edit_icon.png" width={24} />
+                    </a>
+                </div>
+                <div className={styles.image}>
+                    <div hidden={isReplaceImageDropzoneOpen}>
+                        <ModalImage small={imageURL} large={imageURL} />
+                    </div>
+                    <div hidden={!isReplaceImageDropzoneOpen}>
+                        <div {...getRootProps({ className: styles.dropzone })}>
+                            <input {...getInputProps()} />
+                            <p>
+                                Drag and drop panoramas here;
+                                <br />
+                                Or click to open the file dialog
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div hidden={!isLoading}>
+                    <div id={styles.loading}>
+                        <CircularProgress />
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div hidden={!isLoading}>
-          <div id={styles.loading}>
-            <CircularProgress />
-          </div>
-        </div>
-      </div>
-      <div className="toasty">
-        <ToastContainer hideProgressBar={true} theme={"colored"} />
-      </div>
-    </React.Fragment>
-  );
+            <div className="toasty">
+                <ToastContainer hideProgressBar={true} theme={"colored"} />
+            </div>
+        </React.Fragment>
+    );
 }
