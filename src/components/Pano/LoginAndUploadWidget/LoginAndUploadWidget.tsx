@@ -34,7 +34,6 @@ export default function LoginAndUploadWidget({ panoEndpoint }: LoginAndUploadWid
         });
     }, [])
 
-    //const { isLoggedIn, user } = checkUser();
     return (
         <>
             <a
