@@ -1,6 +1,7 @@
 import { ModelType, modelTypeToAPIRouteMap } from "@/lib/types";
 import { getPanoEndpoint } from "@/lib/server";
 import PanoramaCardList from "@/components/PanoramaCardList/PanoramaCardList";
+import PanoHeader from "@/components/Pano/Header/PanoHeader";
 
 export const metadata = {
     title: "View Images on pano",
@@ -37,6 +38,7 @@ export default async function ViewByNetworkNumber({
     console.log(images);
     return (
         <>
+            <PanoHeader />
             <PanoramaCardList images={images} />
         </>
     );
