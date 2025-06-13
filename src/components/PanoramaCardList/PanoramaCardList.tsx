@@ -1,15 +1,16 @@
 import { Image } from "@/lib/types";
 import PanoramaViewerCard from "../PanoramaViewerCard/PanoramaViewerCard";
 import styles from "./PanoramaCardList.module.scss";
+import { getPanoEndpoint } from "@/lib/server";
 
 interface PanoramaViewerProps {
     images: any;
 }
 
-export default function PanoramaCardList({
+export default async function PanoramaCardList({
     images,
 }: PanoramaViewerProps) {
-    console.log("Chom E");
+    const panoEndpoint = await getPanoEndpoint() || "";
     return (
         <>
             <div className={styles.panoramaList}>
@@ -23,6 +24,7 @@ export default function PanoramaCardList({
                                 timestamp={image.timestamp}
                                 category={image.category}
                                 url={image.url}
+                                panoEndpoint={panoEndpoint}
                             />
                         </div>
                     ))}

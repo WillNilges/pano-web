@@ -1,13 +1,12 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import styles from "./PanoramaViewerCard.module.scss";
-import { CircularProgress, MenuItem, Select } from "@mui/material";
+import { CircularProgress, Select } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
 import ModalImage from "react-modal-image";
-import { getPanoEndpoint } from "@/lib/server";
 
 //const selectCategoryOptions = [
 //  { value: "PANORAMA", label: "Panorama" },
@@ -29,6 +28,7 @@ interface PanoramaViewerCardProps {
     timestamp: string;
     category: string;
     url: string;
+    panoEndpoint: string;
 }
 
 export default function PanoramaViewerCard({
@@ -37,12 +37,8 @@ export default function PanoramaViewerCard({
     timestamp,
     category = "",
     url,
+    panoEndpoint,
 }: PanoramaViewerCardProps) {
-    const [panoEndpoint, setPanoEndpoint] = useState("");
-    useEffect(() => {
-        getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
-    }, []);
-
     // React hook form stuff
     const {
         register,
@@ -57,7 +53,7 @@ export default function PanoramaViewerCard({
     // field in
     const [imageTitle, setImageTitle] = React.useState(originalFilename);
 
-    // FIXME (wdn): Any OK here?
+    // FIXME (wdn): Is the "any" type OK here?
     async function handleUpdateCategory(event: any) {
         const newCategory = event.target.value;
 
