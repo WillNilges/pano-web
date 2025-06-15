@@ -24,11 +24,19 @@ export const modelSelectOptions = [
     },
 ];
 
-export default function SearchBar() {
+interface SearchBarProps {
+    modelNumber: number,
+    modelType: ModelType,
+}
+
+export default function SearchBar({
+    modelNumber,
+    modelType
+}: SearchBarProps) {
     const router = useRouter();
 
     // Install Number = False, Network Number = True
-    const [installNumberOrNetworkNumber, setInstallNumberOrNetworkNumber] = useState(false);
+    const [installNumberOrNetworkNumber, setInstallNumberOrNetworkNumber] = useState(modelType === ModelType.NetworkNumber);
 
     const handleChangeModelType = () => {
         setInstallNumberOrNetworkNumber(!installNumberOrNetworkNumber);
@@ -64,7 +72,9 @@ export default function SearchBar() {
     return (
         <>
             <div className={styles.panoSearchBox}>
-                {/*TODO (wdn): The search bar should probably be its own component.*/}
+                <h2>
+                    {`${modelTypeToLabelMap.get(modelType)} ${modelNumber}`}
+                </h2>
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.formBody}>
                     <ModelTypeSwitch
                         {...register("modelType")}

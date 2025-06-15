@@ -1,9 +1,10 @@
 "use server"
-import { ModelType, modelTypeToAPIRouteMap } from "@/lib/types";
+import { ModelType, modelTypeToAPIRouteMap, modelTypeToLabelMap } from "@/lib/types";
 import { getPanoEndpoint } from "@/lib/server";
 import PanoramaCardList from "@/components/PanoramaCardList/PanoramaCardList";
 import PanoHeader from "@/components/Pano/Header/PanoHeader";
 import SearchBar from "../Pano/SearchBar/SearchBar";
+import styles from "./PanoramaViewer.module.scss";
 
 // Retrieves images from the Pano API
 export async function getImages(modelNumber: number, modelType: ModelType) {
@@ -37,7 +38,7 @@ export default async function PanoramaViewer({
     return (
         <>
             <PanoHeader />
-            <SearchBar />
+            <SearchBar modelNumber={modelNumber} modelType={modelType} />
             <PanoramaCardList images={images} />
         </>
     );
