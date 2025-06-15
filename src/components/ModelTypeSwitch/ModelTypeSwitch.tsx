@@ -18,7 +18,7 @@ export const ModelTypeSwitch = styled((props: SwitchProps) => (
             transform: 'translateX(16px)',
             color: '#fff',
             '& + .MuiSwitch-track': {
-                backgroundColor: '#65C466',
+                backgroundColor: '#fecb4e',
                 opacity: 1,
                 border: 0,
                 ...theme.applyStyles('dark', {
@@ -27,6 +27,7 @@ export const ModelTypeSwitch = styled((props: SwitchProps) => (
             },
             '&.Mui-disabled + .MuiSwitch-track': {
                 opacity: 0.5,
+                color: '#0000ff'
             },
         },
         '&.Mui-focusVisible .MuiSwitch-thumb': {
@@ -53,7 +54,7 @@ export const ModelTypeSwitch = styled((props: SwitchProps) => (
     },
     '& .MuiSwitch-track': {
         borderRadius: 26 / 2,
-        backgroundColor: '#E9E9EA',
+        backgroundColor: '#77aaff',
         opacity: 1,
         transition: theme.transitions.create(['background-color'], {
             duration: 500,
