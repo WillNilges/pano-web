@@ -32,7 +32,9 @@ export default async function PanoHeader() {
             alignItems: "center",
           }}
         >
-          <LoginAndUploadWidget panoEndpoint={await getPanoEndpoint()} />
+          <LoginAndUploadWidget
+            panoEndpoint={(await getPanoEndpoint()) || ""}
+          />
         </div>
       </div>
     </>
