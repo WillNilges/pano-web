@@ -17,7 +17,9 @@ export default async function RootLayout({
       </head>
       <body>
         <div>
-          <PanoHeader />
+          {/*
+                    <PanoHeader />
+                    */}
           {children}
         </div>
       </body>

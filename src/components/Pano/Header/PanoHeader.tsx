@@ -1,40 +1,15 @@
-"use client";
-import React, { useEffect, useState } from "react";
 import styles from "./PanoHeader.module.scss";
 import Image from "next/image";
 import { getPanoEndpoint } from "@/lib/server";
+import LoginAndUploadWidget from "../LoginAndUploadWidget/LoginAndUploadWidget";
+import { ModelType } from "@/lib/types";
 
-export default function PanoHeader() {
-  // Authentication
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [user, setUser] = React.useState("");
-  const [panoEndpoint, setPanoEndpoint] = useState("");
+interface PanoHeaderProps {
+  modelNumber: number;
+  modelType: ModelType;
+}
 
-  useEffect(() => {
-    getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
-  }, []);
-
-  useEffect(() => {
-    // Check if we're logged into pano
-    fetch(`${panoEndpoint}/userinfo`, {
-      credentials: "include",
-    }).then(async (response) => {
-      const j = await response.json();
-      if (response.status === 200) {
-        console.log("You're logged in");
-        setUser(j.name);
-        setIsLoggedIn(true);
-        return;
-      }
-      setUser("");
-      setIsLoggedIn(false);
-    });
-  }, [panoEndpoint]);
-
-  if (panoEndpoint === "") {
-    return <div>Loading...</div>; // Show a loading state while your code runs
-  }
-
+export default async function PanoHeader() {
   return (
     <>
       <div className={styles.panoHeader}>
@@ -57,23 +32,9 @@ export default function PanoHeader() {
             alignItems: "center",
           }}
         >
-          <a
-            href={"/upload"}
-            style={{ padding: "10px" }}
-            className={`${!isLoggedIn ? styles.disabled : ""}`}
-          >
-            <img src="/upload_icon.png" width={24} />
-          </a>
-          {isLoggedIn && (
-            <p>
-              {user} (<a href={`${panoEndpoint}/logout`}>Logout</a>)
-            </p>
-          )}
-          {!isLoggedIn && (
-            <a href={`${panoEndpoint}/login/google`}>
-              <p>Log In</p>
-            </a>
-          )}
+          <LoginAndUploadWidget
+            panoEndpoint={(await getPanoEndpoint()) || ""}
+          />
         </div>
       </div>
     </>

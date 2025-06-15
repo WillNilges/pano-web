@@ -1,4 +1,7 @@
-import { ModelType } from "@/lib/types";
+import { ModelType, modelTypeToAPIRouteMap } from "@/lib/types";
+import { getPanoEndpoint } from "@/lib/server";
+import PanoramaCardList from "@/components/PanoramaCardList/PanoramaCardList";
+import PanoHeader from "@/components/Pano/Header/PanoHeader";
 import PanoramaViewer from "@/components/PanoramaViewer/PanoramaViewer";
 
 export const metadata = {
@@ -9,17 +12,13 @@ export const metadata = {
 export default async function ViewByNetworkNumber({
   params,
 }: {
-  params: Promise<{ network_number: string }>;
+  params: Promise<{ network_number: number }>;
 }) {
   const { network_number } = await params;
   return (
-    <>
-      <main>
-        <PanoramaViewer
-          urlModelNumber={network_number}
-          urlModelType={ModelType.NetworkNumber}
-        />
-      </main>
-    </>
+    <PanoramaViewer
+      modelNumber={network_number}
+      modelType={ModelType.NetworkNumber}
+    />
   );
 }

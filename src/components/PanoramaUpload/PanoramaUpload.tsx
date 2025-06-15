@@ -8,17 +8,17 @@ import PanoramaDropzone from "./PanoramaDropzone";
 import { Alert, Button, CircularProgress } from "@mui/material";
 import Select from "react-select";
 import styles from "./PanoramaUpload.module.scss";
-import searchBarStyles from "../Pano/SearchBar/PanoSearchBar.module.scss";
+import searchBarStyles from "../Pano/SearchBar/SearchBar.module.scss";
 import PanoramaDuplicateDialog, {
   PossibleDuplicate,
 } from "../PanoramaDuplicateDialog/PanoramaDuplicateDialog";
 import {
+  modelSelectOptions,
   ModelType,
   modelTypeToAPIFieldMap,
   modelTypeToAPIRouteMap,
   modelTypeToLabelMap,
 } from "@/lib/types";
-import { modelSelectOptions } from "../PanoramaViewer/PanoramaViewer";
 import PanoHeader from "../Pano/Header/PanoHeader";
 import { getPanoEndpoint } from "@/lib/server";
 
