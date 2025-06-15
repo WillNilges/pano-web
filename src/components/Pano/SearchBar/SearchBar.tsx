@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ModelType, modelTypeToAPIRouteMap, modelTypeToLabelMap } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ModelTypeSwitch } from "@/components/ModelTypeSwitch/ModelTypeSwitch";
 
 
 type SearchBarFormValues = {
@@ -22,11 +23,6 @@ export const modelSelectOptions = [
         label: modelTypeToLabelMap.get(ModelType.NetworkNumber),
     },
 ];
-
-
-//interface SearchBarProps {
-//    : ;
-//}
 
 export default function SearchBar() {
     const router = useRouter();
@@ -70,7 +66,7 @@ export default function SearchBar() {
             <div className={styles.panoSearchBox}>
                 {/*TODO (wdn): The search bar should probably be its own component.*/}
                 <form onSubmit={handleSubmit(onSubmit)} className={styles.formBody}>
-                    <Switch
+                    <ModelTypeSwitch
                         {...register("modelType")}
                         checked={installNumberOrNetworkNumber}
                         onChange={handleChangeModelType}

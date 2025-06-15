@@ -8,8 +8,9 @@ import SearchBar from "../Pano/SearchBar/SearchBar";
 // Retrieves images from the Pano API
 export async function getImages(modelNumber: number, modelType: ModelType) {
     console.log(`Querying for modelType = ${modelType}, modelNumber = ${modelNumber}`);
+    const fetchURL = `${await getPanoEndpoint()}/api/v1/${modelTypeToAPIRouteMap.get(modelType)}/${modelNumber}`;
     const response = await fetch(
-        `${await getPanoEndpoint()}/api/v1/${modelTypeToAPIRouteMap.get(modelType)}/${modelNumber}`,
+        fetchURL,
         {
             credentials: "include",
         },
@@ -19,7 +20,7 @@ export async function getImages(modelNumber: number, modelType: ModelType) {
         throw new Error(`Could not fetch images. HTTP Request to Pano failed. Status: ${response.status}`);
     }
     const images = await response.json();
-    console.log(`Got Images: ${JSON.stringify(images)}`);
+    console.log(`Retrieved images from ${fetchURL}`);
     return images;
 }
 

@@ -2,7 +2,12 @@ import styles from "./PanoHeader.module.scss";
 import Image from "next/image";
 import { getPanoEndpoint } from "@/lib/server";
 import LoginAndUploadWidget from "../LoginAndUploadWidget/LoginAndUploadWidget";
+import { ModelType } from "@/lib/types";
 
+interface PanoHeaderProps {
+    modelNumber: number,
+    modelType: ModelType,
+}
 
 export default async function PanoHeader() {
     return (
