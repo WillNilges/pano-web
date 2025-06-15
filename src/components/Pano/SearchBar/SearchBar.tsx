@@ -16,17 +16,6 @@ type SearchBarFormValues = {
   modelType: boolean;
 };
 
-export const modelSelectOptions = [
-  {
-    value: ModelType.InstallNumber,
-    label: modelTypeToLabelMap.get(ModelType.InstallNumber),
-  },
-  {
-    value: ModelType.NetworkNumber,
-    label: modelTypeToLabelMap.get(ModelType.NetworkNumber),
-  },
-];
-
 interface SearchBarProps {
   modelNumber: number;
   modelType: ModelType;
@@ -65,11 +54,15 @@ export default function SearchBar({ modelNumber, modelType }: SearchBarProps) {
     // setModelNumber(String(data.modelNumber));
 
     const apiRoute = modelTypeToAPIRouteMap.get(modelType);
-    //const modelString = modelTypeToLabelMap.get(modelType);
 
     console.log(apiRoute);
 
-    location.href = `/view/${apiRoute}/${data.modelNumber}`;
+    const sanitizedModelNumber = Number(data.modelNumber);
+    if (isNaN(sanitizedModelNumber) || sanitizedModelNumber < 0) {
+      console.error("Invalid model number provided.");
+      return;
+    }
+    location.href = `/view/${apiRoute}/${sanitizedModelNumber}`;
   };
 
   return (
