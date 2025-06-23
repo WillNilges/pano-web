@@ -32,6 +32,7 @@ export async function getImages(modelNumber: number, modelType: ModelType) {
     }
     const image_response_json = await response.json();
     console.log(`Retrieved images from ${fetchURL}`);
+    console.debug(image_response_json);
     return image_response_json;
 }
 
@@ -44,12 +45,30 @@ export default async function PanoramaViewer({
     modelNumber,
     modelType,
 }: PanoramaViewerProps) {
-    const { images, additional_images } = await getImages(modelNumber, modelType);
-    return (
-        <>
+    try {
+        const { images, additional_images } = await getImages(modelNumber, modelType);
+        return (
+            <>
+                <PanoHeader />
+                <SearchBar modelNumber={modelNumber} modelType={modelType} />
+                <PanoramaCardList images={images} />
+                {Object.entries(additional_images).length > 0 &&
+                    <h2 style={{ color: "#8490a4", borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: "#ccc" }}>Related Images</h2>
+                }
+                {Object.entries(additional_images).map(([additionalModelNumber, additionalImages]) => (
+                    <div key={additionalModelNumber}>
+                        <h2>{modelType === ModelType.InstallNumber ? "NN" : "Install #"} {additionalModelNumber}</h2>
+                        <PanoramaCardList images={additionalImages} />
+                    </div>
+                ))}
+            </>
+        );
+    } catch (e) {
+        console.error(e);
+        return (<>
             <PanoHeader />
             <SearchBar modelNumber={modelNumber} modelType={modelType} />
-            <PanoramaCardList images={images} additional_images={additional_images} />
-        </>
-    );
+            <h1 style={{ display: "flex", justifyContent: "center" }}>No panoramas found! 🤷</h1>
+        </>)
+    }
 }
