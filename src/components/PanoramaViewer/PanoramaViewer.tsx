@@ -52,12 +52,12 @@ export default async function PanoramaViewer({
                 <PanoHeader />
                 <SearchBar modelNumber={modelNumber} modelType={modelType} />
                 <PanoramaCardList images={images} />
-                {Object.values(additional_images).every(images => images.length === 0) ||
+                {Object.values(additional_images as typeof Image[]).every(images => images.length === 0) ||
                     <h2 style={{ color: "#8490a4", borderWidth: "0 0 1px 0", borderStyle: "solid", borderColor: "#ccc" }}>Related Images</h2>
                 }
                 {Object.entries(additional_images).map(([additionalModelNumber, additionalImages]) => (
                     <div key={additionalModelNumber}>
-                        {additionalImages.length > 0 && <h2>{modelType === ModelType.InstallNumber ? "NN" : "Install #"} {additionalModelNumber}</h2>}
+                        {(additionalImages as typeof Image[]).length > 0 && <h2>{modelType === ModelType.InstallNumber ? "NN" : "Install #"} {additionalModelNumber}</h2>}
                         <PanoramaCardList images={additionalImages} />
                     </div>
                 ))}
