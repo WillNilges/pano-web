@@ -3,11 +3,12 @@ permissions: read-all
 
 on:
   push:
-    branches: [ main, dev3 ]
+    branches: [ main, dev3, wdn/additional_images ]
   workflow_dispatch:
     branches:
       - main
       - dev3
+      - wdn/additional_images
 
 jobs:
   push_to_registry_dev:

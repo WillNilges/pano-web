@@ -58,11 +58,10 @@ export default function PanoramaViewerCard({
     const newCategory = event.target.value;
 
     let formData = new FormData();
-    formData.append("id", id);
     formData.append("new_category", newCategory);
     console.log(event.target.value);
-    fetch(`${panoEndpoint}/api/v1/update`, {
-      method: "POST",
+    fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+      method: "PUT",
       credentials: "include",
       body: formData,
     }).then(async (response) => {

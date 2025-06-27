@@ -30,9 +30,10 @@ export async function getImages(modelNumber: number, modelType: ModelType) {
       `Could not fetch images. HTTP Request to Pano failed. Status: ${response.status}`,
     );
   }
-  const images = await response.json();
+  const image_response_json = await response.json();
   console.log(`Retrieved images from ${fetchURL}`);
-  return images;
+  console.debug(image_response_json);
+  return image_response_json;
 }
 
 interface PanoramaViewerProps {
@@ -44,12 +45,63 @@ export default async function PanoramaViewer({
   modelNumber,
   modelType,
 }: PanoramaViewerProps) {
-  const images = await getImages(modelNumber, modelType);
-  return (
-    <>
-      <PanoHeader />
-      <SearchBar modelNumber={modelNumber} modelType={modelType} />
-      <PanoramaCardList images={images} />
-    </>
-  );
+  if (modelNumber === undefined || modelType === undefined) {
+    return (
+      <>
+        <PanoHeader />
+        <SearchBar modelNumber={modelNumber} modelType={modelType} />
+      </>
+    );
+  }
+  try {
+    const { images, additional_images } = await getImages(
+      modelNumber,
+      modelType,
+    );
+    return (
+      <>
+        <PanoHeader />
+        <SearchBar modelNumber={modelNumber} modelType={modelType} />
+        <PanoramaCardList images={images} />
+        {Object.values(additional_images as (typeof Image)[]).every(
+          (images) => images.length === 0,
+        ) || (
+          <h2
+            style={{
+              color: "#8490a4",
+              borderWidth: "0 0 1px 0",
+              borderStyle: "solid",
+              borderColor: "#ccc",
+            }}
+          >
+            Related Images
+          </h2>
+        )}
+        {Object.entries(additional_images).map(
+          ([additionalModelNumber, additionalImages]) => (
+            <div key={additionalModelNumber}>
+              {(additionalImages as (typeof Image)[]).length > 0 && (
+                <h2>
+                  {modelType === ModelType.InstallNumber ? "NN" : "Install #"}{" "}
+                  {additionalModelNumber}
+                </h2>
+              )}
+              <PanoramaCardList images={additionalImages} />
+            </div>
+          ),
+        )}
+      </>
+    );
+  } catch (e) {
+    console.error(e);
+    return (
+      <>
+        <PanoHeader />
+        <SearchBar modelNumber={modelNumber} modelType={modelType} />
+        <h1 style={{ display: "flex", justifyContent: "center" }}>
+          No panoramas found! 🤷
+        </h1>
+      </>
+    );
+  }
 }

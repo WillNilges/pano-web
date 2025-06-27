@@ -14,7 +14,8 @@ export default async function PanoramaCardList({
   return (
     <>
       <div className={styles.panoramaList}>
-        {images.length > 0 &&
+        {images !== undefined &&
+          images.length > 0 &&
           images.map((image: Image, index: any) => (
             <div key={image.id}>
               <PanoramaViewerCard
