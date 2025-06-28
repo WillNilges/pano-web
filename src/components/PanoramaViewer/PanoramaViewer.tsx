@@ -20,7 +20,7 @@ export async function getImages(modelNumber: number, modelType: ModelType) {
   console.log(
     `Querying for modelType = ${modelType}, modelNumber = ${modelNumber}`,
   );
-  const fetchURL = `${await getPanoEndpoint()}/api/v1/${modelTypeToAPIRouteMap.get(modelType)}/${modelNumber}`;
+  const fetchURL = `${await getPanoEndpoint()}/api/v1/${modelTypeToAPIRouteMap.get(modelType)}/${modelNumber}?get_related=True`;
   const response = await fetch(fetchURL, {
     credentials: "include",
   });
