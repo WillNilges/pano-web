@@ -35,4 +35,5 @@ export type Image = {
   timestamp: string;
   category: string;
   url: string;
+  thumb: string;
 };

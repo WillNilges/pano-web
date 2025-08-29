@@ -25,6 +25,7 @@ export default async function PanoramaCardList({
                 timestamp={image.timestamp}
                 category={image.category}
                 url={image.url}
+                thumb={image.thumb}
                 panoEndpoint={panoEndpoint}
               />
             </div>
