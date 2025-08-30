@@ -1,5 +1,5 @@
 // Idea: Have people validate their panoramas with their email?
-import PanoramaUploader from "@/components/PanoramaUpload/PanoramaUpload";
+import Uploader from "@/components/Uploader/Uploader";
 
 export const metadata = {
   title: "Upload Panoramas and other Install Photos",
@@ -10,7 +10,7 @@ export default async function PanoramaUpload() {
   return (
     <>
       <main>
-        <PanoramaUploader />
+        <Uploader />
       </main>
     </>
   );

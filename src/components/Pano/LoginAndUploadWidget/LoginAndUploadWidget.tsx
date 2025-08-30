@@ -4,7 +4,6 @@ import { getPanoEndpoint } from "@/lib/server";
 import React, { useEffect } from "react";
 
 async function checkUser(panoEndpoint: string): Promise<{ isLoggedIn: boolean; user: string }> {
-  //const panoEndpoint = await getPanoEndpoint();
   const response = await fetch(`${panoEndpoint}/userinfo`, {
     credentials: "include",
   });
