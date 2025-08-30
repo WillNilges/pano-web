@@ -3,7 +3,7 @@ import styles from "./LoginAndUploadWidget.module.scss";
 import { getPanoEndpoint } from "@/lib/server";
 import React, { useEffect } from "react";
 
-async function checkUser(panoEndpoint: string): Promise<{ isLoggedIn: boolean; user: string }> {
+export async function checkUser(panoEndpoint: string): Promise<{ isLoggedIn: boolean; user: string }> {
   const response = await fetch(`${panoEndpoint}/userinfo`, {
     credentials: "include",
   });
