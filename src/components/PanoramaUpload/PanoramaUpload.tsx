@@ -123,7 +123,6 @@ export default function PanoramaUploader() {
     }
 
     // Set the install number, or the network number.
-    // TODO (wdn): can wew replace this with the nice slider?
     formData.append(
       modelTypeToAPIFieldMap.get(selectedModel) ?? "install", // Sanity check: Default to install
       formSubmission.modelNumber.toString(),

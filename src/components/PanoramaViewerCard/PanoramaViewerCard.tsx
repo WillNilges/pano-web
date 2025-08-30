@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
 import ModalImage from "react-modal-image";
+import DeletePanoramaDialogue from "../DeletePanoramaDialog/DeletePanoramaDialog";
 
 //const selectCategoryOptions = [
 //  { value: "PANORAMA", label: "Panorama" },
@@ -76,6 +77,35 @@ export default function PanoramaViewerCard({
 
   function handleClickReplaceImage() {
     setIsReplaceImageDropzoneOpen(!isReplaceImageDropzoneOpen);
+  }
+
+  // Delete stuff
+  
+  // Shows and hides the delete dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
+    React.useState(false);
+
+  // Closes dupe dialog and tries the submission again
+  const handleClickConfirmDelete = () => {
+    setIsDeleteDialogOpen(false);
+    fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).then(async (response) => {
+        const j = await response.json();
+        console.log(j);
+      });
+  };
+
+  // Closes the dupe dialog and allows the user to make chances
+  const handleClickCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  function handleClickDeleteImage() {
+    // This is similar to the trust me bro dialogue
+    // Pass the delete dialogue the UUID
+    setIsDeleteDialogOpen(true);
   }
 
   // Shows and hides the replaceImage dropzone
@@ -174,6 +204,9 @@ export default function PanoramaViewerCard({
           <a onClick={handleClickReplaceImage}>
             <img src="/edit_icon.png" width={24} />
           </a>
+          <a onClick={handleClickDeleteImage}>
+            <img src="/delete.png" width={24} />
+          </a>
         </div>
         <div className={styles.image}>
           <div hidden={isReplaceImageDropzoneOpen}>
@@ -199,6 +232,11 @@ export default function PanoramaViewerCard({
       <div className="toasty">
         <ToastContainer hideProgressBar={true} theme={"colored"} />
       </div>
+      <DeletePanoramaDialogue
+        isDialogOpened={isDeleteDialogOpen}
+        handleClickConfirm={handleClickConfirmDelete}
+        handleClickCancel={handleClickCancelDelete}
+      />
     </React.Fragment>
   );
 }
