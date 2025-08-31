@@ -95,6 +95,7 @@ export default function PanoramaViewerCard({
         const j = await response.json();
         console.log(j);
       });
+    // TODO (wdn): How do we delete the panoramaviewercard now?
   };
 
   // Closes the dupe dialog and allows the user to make chances
