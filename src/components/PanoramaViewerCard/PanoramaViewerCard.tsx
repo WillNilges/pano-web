@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
 import ModalImage from "react-modal-image";
+import DeletePanoramaDialogue from "../DeletePanoramaDialog/DeletePanoramaDialog";
 
 //const selectCategoryOptions = [
 //  { value: "PANORAMA", label: "Panorama" },
@@ -28,6 +29,7 @@ interface PanoramaViewerCardProps {
   timestamp: string;
   category: string;
   url: string;
+  thumb: string;
   panoEndpoint: string;
 }
 
@@ -37,6 +39,7 @@ export default function PanoramaViewerCard({
   timestamp,
   category = "",
   url,
+  thumb,
   panoEndpoint,
 }: PanoramaViewerCardProps) {
   // React hook form stuff
@@ -48,12 +51,14 @@ export default function PanoramaViewerCard({
   } = useForm<FormValues>();
 
   const [imageURL, setImageURL] = React.useState(url);
+  const [thumbURL, setThumbURL] = React.useState(thumb);
 
   // FIXME (wdn): I should just pass in an Image object instead of passing each
   // field in
   const [imageTitle, setImageTitle] = React.useState(originalFilename);
 
   // FIXME (wdn): Is the "any" type OK here?
+  // TODO (wdn): Make sure this works with thumbnail too
   async function handleUpdateCategory(event: any) {
     const newCategory = event.target.value;
 
@@ -74,6 +79,36 @@ export default function PanoramaViewerCard({
     setIsReplaceImageDropzoneOpen(!isReplaceImageDropzoneOpen);
   }
 
+  // Delete stuff
+  
+  // Shows and hides the delete dialog
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
+    React.useState(false);
+
+  // Closes dupe dialog and tries the submission again
+  const handleClickConfirmDelete = () => {
+    setIsDeleteDialogOpen(false);
+    fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).then(async (response) => {
+        const j = await response.json();
+        console.log(j);
+      });
+    // TODO (wdn): How do we delete the panoramaviewercard now?
+  };
+
+  // Closes the dupe dialog and allows the user to make chances
+  const handleClickCancelDelete = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  function handleClickDeleteImage() {
+    // This is similar to the trust me bro dialogue
+    // Pass the delete dialogue the UUID
+    setIsDeleteDialogOpen(true);
+  }
+
   // Shows and hides the replaceImage dropzone
   const [isReplaceImageDropzoneOpen, setIsReplaceImageDropzoneOpen] =
     React.useState(false);
@@ -91,8 +126,8 @@ export default function PanoramaViewerCard({
       formData.append("dropzoneImages[]", dropzoneImages[x]);
     }
 
-    fetch(`${panoEndpoint}/api/v1/update`, {
-      method: "POST",
+    fetch(`${panoEndpoint}/api/v1/image/${id}`, {
+      method: "PUT",
       credentials: "include",
       body: formData,
     })
@@ -101,22 +136,11 @@ export default function PanoramaViewerCard({
           console.log("Files uploaded successfully");
           toast.success("Upload Successful!");
 
-          // todo: don't sort by date?
-          fetch(`${panoEndpoint}/api/v1/image/${id}`, {
-            credentials: "include",
-          })
-            .then(async (response) => {
-              if (!response.ok) {
-                throw response;
-              }
-              const j = await response.json();
-              setImageTitle(j.original_filename);
-              setImageURL(j.url);
-            })
-            .catch(async (error) => {
-              const msg = `Could not update image: ${error}`;
-              toast.error(msg);
-            });
+          const j = await response.json();
+          setImageTitle(j.original_filename);
+          setImageURL(j.url);
+          setThumbURL(j.thumb);
+
           setIsReplaceImageDropzoneOpen(false);
           setIsLoading(false);
           return;
@@ -181,10 +205,13 @@ export default function PanoramaViewerCard({
           <a onClick={handleClickReplaceImage}>
             <img src="/edit_icon.png" width={24} />
           </a>
+          <a onClick={handleClickDeleteImage}>
+            <img src="/delete.png" width={24} />
+          </a>
         </div>
         <div className={styles.image}>
           <div hidden={isReplaceImageDropzoneOpen}>
-            <ModalImage small={imageURL} large={imageURL} />
+            <ModalImage small={thumbURL} large={imageURL} />
           </div>
           <div hidden={!isReplaceImageDropzoneOpen}>
             <div {...getRootProps({ className: styles.dropzone })}>
@@ -206,6 +233,11 @@ export default function PanoramaViewerCard({
       <div className="toasty">
         <ToastContainer hideProgressBar={true} theme={"colored"} />
       </div>
+      <DeletePanoramaDialogue
+        isDialogOpened={isDeleteDialogOpen}
+        handleClickConfirm={handleClickConfirmDelete}
+        handleClickCancel={handleClickCancelDelete}
+      />
     </React.Fragment>
   );
 }

@@ -14,6 +14,7 @@
     "@mui/material": "^7.0.2",
     "maui": "^0.0.0",
     "next": "15.3.1",
+    "playwright": "^1.55.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",

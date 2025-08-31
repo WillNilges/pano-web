@@ -1,5 +1,9 @@
 "use server";
 
 export async function getPanoEndpoint() {
-  return process.env.PANO_ENDPOINT;
+  const endpoint = process.env.PANO_ENDPOINT;
+  if (endpoint === undefined || endpoint === '') {
+    throw new Error('PANO_ENDPOINT is undefined. Check your env vars.');
+  }
+  return endpoint;
 }

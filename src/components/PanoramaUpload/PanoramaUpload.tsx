@@ -40,30 +40,11 @@ interface Image {
 
 export type { FormValues };
 
-function PanoramaUploader() {
+export default function PanoramaUploader() {
   const [panoEndpoint, setPanoEndpoint] = React.useState("");
   useEffect(() => {
     getPanoEndpoint().then((endpoint) => setPanoEndpoint(endpoint ?? ""));
   }, []);
-
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [user, setUser] = React.useState("");
-  useEffect(() => {
-    // TODO (wdn): The login element should probably be its own component
-    // Check if we're logged into pano
-    fetch(`${panoEndpoint}/userinfo`, {
-      credentials: "include",
-    }).then(async (response) => {
-      const j = await response.json();
-      if (response.status === 200) {
-        console.log("You're logged in");
-        setUser(j.name);
-        setIsLoggedIn(true);
-        return;
-      }
-      window.location.replace(`${panoEndpoint}/login/google`);
-    });
-  }, [panoEndpoint]);
 
   const [selectedModel, setSelectedModel] = React.useState(
     ModelType.InstallNumber,
@@ -239,18 +220,6 @@ function PanoramaUploader() {
     setFormSubmission(data); // Side Effect: Submits the form
   };
 
-  if (!isLoggedIn) {
-    // While the app decides whether or not you're logged in it'll hide the view from you.
-    return (
-      <>
-        <a href="/view" style={{ textDecoration: "none", color: "black" }}>
-          <h1>Pano</h1>
-        </a>
-        <p>Loading...</p>
-      </>
-    );
-  }
-
   return (
     <>
       <h2>Image Upload</h2>
@@ -317,7 +286,5 @@ function PanoramaUploader() {
     </>
   );
 }
-
-export default PanoramaUploader;
 
 // Idea: Have people validate their panoramas with their email?

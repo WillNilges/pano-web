@@ -3,8 +3,7 @@ import styles from "./LoginAndUploadWidget.module.scss";
 import { getPanoEndpoint } from "@/lib/server";
 import React, { useEffect } from "react";
 
-async function checkUser(): Promise<{ isLoggedIn: boolean; user: string }> {
-  const panoEndpoint = await getPanoEndpoint();
+export async function checkUser(panoEndpoint: string): Promise<{ isLoggedIn: boolean; user: string }> {
   const response = await fetch(`${panoEndpoint}/userinfo`, {
     credentials: "include",
   });
@@ -29,7 +28,7 @@ export default function LoginAndUploadWidget({
   const [user, setUser] = React.useState("");
 
   useEffect(() => {
-    checkUser().then((response) => {
+    checkUser(panoEndpoint).then((response) => {
       setIsLoggedIn(response.isLoggedIn);
       setUser(response.user);
     });
